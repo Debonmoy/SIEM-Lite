@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% from "_macros.html" import pagination, severity_badge %}
+{% block title %}Alerts — {{ app_name }}{% endblock %}
+{% block content %}
+<h1>Alert explorer</h1>
+<p class="muted">{{ total }} alert(s) match the current filters.</p>
+
+<form class="filters" method="get" action="{{ url_for('alerts_view') }}">
+  <div><label>Severity</label>
+    <select name="severity">
+      <option value="">Any</option>
+      {% for sev in severities %}<option value="{{ sev }}" {{ 'selected' if filters.severity == sev }}>{{ sev }}</option>{% endfor %}
+    </select>
+  </div>
+  <div><label>Category</label>
+    <select name="category">
+      <option value="">Any</option>
+      {% for cat in categories %}<option value="{{ cat }}" {{ 'selected' if filters.category == cat }}>{{ cat }}</option>{% endfor %}
+    </select>
+  </div>
+  <div><label>Status</label>
+    <select name="status">
+      <option value="">Any</option>
+      {% for st in statuses %}<option value="{{ st }}" {{ 'selected' if filters.status == st }}>{{ st }}</option>{% endfor %}
+    </select>
+  </div>
+  <div><label>Source IP</label><input name="source_ip" value="{{ filters.source_ip }}" placeholder="e.g. 1.2.3.4"></div>
+  <div><label>Search</label><input name="search" value="{{ filters.search }}" placeholder="title or description"></div>
+  <div class="filter-actions"><button class="btn" type="submit">Apply</button><a class="btn ghost" href="{{ url_for('alerts_view') }}">Reset</a></div>
+</form>
+
+{% if alerts %}
+<table>
+  <thead><tr><th>Created</th><th>Severity</th><th>Category</th><th>Alert</th><th>Source IP</th><th>User</th><th>Events</th><th>Status</th></tr></thead>
+  <tbody>
+  {% for alert in alerts %}
+    <tr>
+      <td class="small">{{ alert.created_at }}</td>
+      <td>{{ severity_badge(alert.severity) }}</td>
+      <td>{{ alert.category }}</td>
+      <td><a href="{{ url_for('alert_detail', alert_id=alert.alert_id) }}">{{ alert.title }}</a>
+        <div class="muted small">{{ alert.description|short(120) }}</div></td>
+      <td>{{ alert.source_ip or '-' }}</td>
+      <td>{{ alert.username or '-' }}</td>
+      <td>{{ alert.event_count }}</td>
+      <td><span class="tag">{{ alert.status }}</span></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{{ pagination('alerts_view', page, pages, filters) }}
+{% else %}
+<p class="muted">No alerts match these filters.</p>
+{% endif %}
+{% endblock %}

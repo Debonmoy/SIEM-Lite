@@ -1,0 +1,26 @@
+{% macro bar_list(items, empty='No data') -%}
+{% set m = (items | map(attribute='count') | max) if items else 0 %}
+{% for item in items %}
+<div class="bar-row">
+  <span class="bar-label" title="{{ item.label }}">{{ item.label }}</span>
+  <span class="bar-track"><span class="bar-fill" style="width: {{ (item.count / m * 100) if m else 0 }}%"></span></span>
+  <span class="bar-value">{{ item.count }}</span>
+</div>
+{% else %}
+<p class="muted">{{ empty }}</p>
+{% endfor %}
+{%- endmacro %}
+
+{% macro pagination(endpoint, page, pages, filters) -%}
+{% if pages > 1 %}
+<div class="pager">
+  {% if page > 1 %}<a class="btn small" href="{{ url_for(endpoint, page=page-1, **filters) }}">Previous</a>{% endif %}
+  <span class="muted">Page {{ page }} of {{ pages }}</span>
+  {% if page < pages %}<a class="btn small" href="{{ url_for(endpoint, page=page+1, **filters) }}">Next</a>{% endif %}
+</div>
+{% endif %}
+{%- endmacro %}
+
+{% macro severity_badge(severity) -%}
+<span class="badge sev-{{ severity|upper }}">{{ severity|upper }}</span>
+{%- endmacro %}

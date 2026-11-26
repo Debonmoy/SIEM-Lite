@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% from "_macros.html" import severity_badge %}
+{% block title %}{{ alert.title }} — {{ app_name }}{% endblock %}
+{% block content %}
+<p><a href="{{ url_for('alerts_view') }}">&larr; Back to alerts</a></p>
+<h1>{{ alert.title }}</h1>
+<p>
+  {{ severity_badge(alert.severity) }}
+  <span class="tag">{{ alert.category }}</span>
+  <span class="tag">{{ alert.status }}</span>
+</p>
+
+<div class="grid-2">
+  <div class="panel">
+    <h2>Details</h2>
+    <table class="kv">
+      <tr><th>Alert ID</th><td>{{ alert.alert_id }}</td></tr>
+      <tr><th>Rule</th><td>{{ alert.rule_id }}</td></tr>
+      <tr><th>Category</th><td>{{ alert.category }}</td></tr>
+      <tr><th>Severity</th><td>{{ alert.severity }}</td></tr>
+      <tr><th>Source IP</th><td>{{ alert.source_ip or '-' }}</td></tr>
+      <tr><th>Username</th><td>{{ alert.username or '-' }}</td></tr>
+      <tr><th>Related events</th><td>{{ alert.event_count }}</td></tr>
+      <tr><th>Created</th><td>{{ alert.created_at }}</td></tr>
+      <tr><th>Updated</th><td>{{ alert.updated_at }}</td></tr>
+      <tr><th>Session</th><td>{{ alert.session_id or '-' }}</td></tr>
+    </table>
+  </div>
+  <div class="panel">
+    <h2>Update status</h2>
+    <form method="post" action="{{ url_for('update_alert_status', alert_id=alert.alert_id) }}">
+      <label>Status</label>
+      <select name="status">
+        {% for status in statuses %}<option value="{{ status }}" {{ 'selected' if alert.status == status }}>{{ status }}</option>{% endfor %}
+      </select>
+      <label>Investigation note (optional)</label>
+      <textarea name="note" rows="4" placeholder="Why is this being closed or escalated?"></textarea>
+      <button class="btn" type="submit">Save status</button>
+    </form>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Description</h2>
+  <p>{{ alert.description }}</p>
+  <h2>Explanation and risk rationale</h2>
+  <p>{{ alert.explanation or 'No explanation recorded.' }}</p>
+</div>
+
+<div class="panel">
+  <h2>Recommended investigation steps</h2>
+  {% if alert.recommended_actions %}
+  <ol>{% for step in alert.recommended_actions %}<li>{{ step }}</li>{% endfor %}</ol>
+  {% else %}<p class="muted">No steps recorded.</p>{% endif %}
+</div>
+
+<div class="panel">
+  <h2>Supporting evidence</h2>
+  {% if alert.evidence %}
+  <details open><summary>{{ alert.event_count }} related event(s) (showing {{ alert.evidence|length }})</summary>
+    <pre>{{ alert.evidence | tojson(indent=2) }}</pre>
+  </details>
+  {% else %}<p class="muted">No evidence stored.</p>{% endif %}
+</div>
+{% endblock %}

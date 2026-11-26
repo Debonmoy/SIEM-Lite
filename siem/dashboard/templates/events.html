@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% from "_macros.html" import pagination %}
+{% block title %}Events — {{ app_name }}{% endblock %}
+{% block content %}
+<h1>Event explorer</h1>
+<p class="muted">{{ total }} event(s) match the current filters.</p>
+
+<form class="filters" method="get" action="{{ url_for('events_view') }}">
+  <div><label>Source IP</label><input name="source_ip" value="{{ filters.source_ip }}" placeholder="e.g. 1.2.3.4"></div>
+  <div><label>Username</label><input name="username" value="{{ filters.username }}" placeholder="e.g. root"></div>
+  <div><label>Format</label>
+    <select name="log_format">
+      <option value="">Any</option>
+      {% for fmt in formats %}<option value="{{ fmt }}" {{ 'selected' if filters.log_format == fmt }}>{{ fmt }}</option>{% endfor %}
+    </select>
+  </div>
+  <div><label>OS source</label>
+    <select name="os_source">
+      <option value="">Any</option>
+      {% for os in os_sources %}<option value="{{ os }}" {{ 'selected' if filters.os_source == os }}>{{ os }}</option>{% endfor %}
+    </select>
+  </div>
+  <div><label>Event code</label>
+    <select name="event_code">
+      <option value="">Any</option>
+      {% for code in event_codes %}<option value="{{ code }}" {{ 'selected' if filters.event_code == code }}>{{ code }}</option>{% endfor %}
+    </select>
+  </div>
+  <div><label>Search</label><input name="search" value="{{ filters.search }}" placeholder="message or path"></div>
+  <div><label>From</label><input type="date" name="start" value="{{ filters.start }}"></div>
+  <div><label>To</label><input type="date" name="end" value="{{ filters.end }}"></div>
+  <div class="filter-actions"><button class="btn" type="submit">Apply</button><a class="btn ghost" href="{{ url_for('events_view') }}">Reset</a></div>
+</form>
+
+{% if events %}
+<table>
+  <thead><tr><th>Timestamp</th><th>Format</th><th>Type / Code</th><th>Source IP</th><th>User</th><th>Result</th><th>Path / Message</th></tr></thead>
+  <tbody>
+  {% for event in events %}
+    <tr>
+      <td class="small">{{ event.timestamp or '-' }}</td>
+      <td><span class="tag">{{ event.log_format }}</span></td>
+      <td>{{ event.event_type or '-' }}{% if event.event_code %}<br><span class="muted small">ID {{ event.event_code }}</span>{% endif %}</td>
+      <td>{{ event.source_ip or '-' }}</td>
+      <td>{{ event.username or '-' }}</td>
+      <td>
+        {% if event.auth_result %}<span class="badge {{ 'ok' if event.auth_result == 'success' else 'bad' }}">{{ event.auth_result }}</span>
+        {% elif event.http_status %}{{ event.http_status }}{% else %}-{% endif %}
+      </td>
+      <td class="small">{{ event.request_path or event.raw_message|short(140) }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{{ pagination('events_view', page, pages, filters) }}
+{% else %}
+<p class="muted">No events match these filters.</p>
+{% endif %}
+{% endblock %}

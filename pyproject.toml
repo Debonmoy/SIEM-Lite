@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "log-analyzer-minisiem"
+version = "1.0.0"
+description = "Cross-platform log analyzer and educational mini SIEM for Linux and Windows logs"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Debonmoy Pal" }]
+keywords = ["siem", "log-analysis", "security", "forensics", "evtx", "detection"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: System :: Logging",
+]
+dependencies = [
+    "Flask>=3.0,<4.0",
+    "Jinja2>=3.1,<4.0",
+    "python-evtx>=0.7.4,<1.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0,<10.0"]
+
+[project.scripts]
+minisiem = "siem.cli.commands:main"
+
+[tool.setuptools.packages.find]
+include = ["siem*"]
+
+[tool.setuptools.package-data]
+siem = [
+    "database/*.sql",
+    "dashboard/templates/*.html",
+    "dashboard/static/*.css",
+    "reports/templates/*.html",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

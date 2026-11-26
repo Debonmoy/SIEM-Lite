@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% from "_macros.html" import bar_list %}
+{% block title %}Analytics — {{ app_name }}{% endblock %}
+{% block content %}
+<h1>Security analytics</h1>
+<p class="muted">Distributions computed from the local event and alert database.</p>
+
+<div class="grid-2">
+  <div class="panel"><h2>Alerts by severity</h2>{{ bar_list(severity, 'No alerts.') }}</div>
+  <div class="panel"><h2>Alerts by category</h2>{{ bar_list(categories, 'No alerts.') }}</div>
+  <div class="panel"><h2>Alert status</h2>{{ bar_list(statuses, 'No alerts.') }}</div>
+  <div class="panel"><h2>Events by source type</h2>
+    <p class="small muted">Imported files vs live monitoring.</p>
+  </div>
+  <div class="panel"><h2>Top source IPs</h2>{{ bar_list(top_ips, 'No events.') }}</div>
+  <div class="panel"><h2>Most targeted usernames</h2>{{ bar_list(top_users, 'No usernames.') }}</div>
+  <div class="panel"><h2>Windows Event ID distribution</h2>{{ bar_list(event_ids, 'No Windows events.') }}</div>
+  <div class="panel"><h2>Events by log format</h2>{{ bar_list(formats, 'No events.') }}</div>
+  <div class="panel"><h2>Events by OS source</h2>{{ bar_list(os_sources, 'No events.') }}</div>
+  <div class="panel"><h2>Failed logins over time</h2>{{ bar_list(failed_time, 'No failed logins.') }}</div>
+</div>
+{% endblock %}

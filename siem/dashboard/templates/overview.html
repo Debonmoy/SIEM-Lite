@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% from "_macros.html" import bar_list, severity_badge %}
+{% block title %}Overview — {{ app_name }}{% endblock %}
+{% block content %}
+<h1>Security overview</h1>
+
+<div class="live-note">
+  <strong>Data provenance:</strong>
+  {% set imported = (source_types | selectattr('label', 'equalto', 'file') | list) %}
+  {% set live = (source_types | selectattr('label', 'equalto', 'live') | list) %}
+  Imported/offline events: <strong>{{ imported[0].count if imported else 0 }}</strong> &middot;
+  Live-monitored events: <strong>{{ live[0].count if live else 0 }}</strong>
+  <div class="muted small">{{ live_notice }}</div>
+</div>
+
+<section class="cards">
+  <div class="card"><div class="num">{{ stats.total_events }}</div><div class="lbl">Events analyzed</div></div>
+  <div class="card"><div class="num">{{ stats.total_alerts }}</div><div class="lbl">Total alerts</div></div>
+  <div class="card crit"><div class="num">{{ stats.critical_alerts }}</div><div class="lbl">Critical alerts</div></div>
+  <div class="card high"><div class="num">{{ stats.high_alerts }}</div><div class="lbl">High alerts</div></div>
+  <div class="card"><div class="num">{{ stats.unique_ips }}</div><div class="lbl">Unique source IPs</div></div>
+  <div class="card"><div class="num">{{ stats.failed_logins }}</div><div class="lbl">Failed logins</div></div>
+  <div class="card"><div class="num">{{ stats.open_alerts }}</div><div class="lbl">Open alerts</div></div>
+</section>
+
+<div class="grid-2">
+  <div class="panel">
+    <h2>Alerts by severity</h2>
+    {{ bar_list(severity, 'No alerts yet.') }}
+  </div>
+  <div class="panel">
+    <h2>Attacks by category</h2>
+    {{ bar_list(categories, 'No alerts yet.') }}
+  </div>
+  <div class="panel">
+    <h2>Top source IPs</h2>
+    {{ bar_list(top_ips, 'No events yet.') }}
+  </div>
+  <div class="panel">
+    <h2>Failed logins over time</h2>
+    {{ bar_list(failed_time, 'No failed logins.') }}
+  </div>
+</div>
+
+<h2>Recent alerts</h2>
+{% if recent_alerts %}
+<table>
+  <thead><tr><th>Created</th><th>Severity</th><th>Category</th><th>Alert</th><th>Source IP</th><th>Status</th></tr></thead>
+  <tbody>
+  {% for alert in recent_alerts %}
+    <tr>
+      <td class="small">{{ alert.created_at }}</td>
+      <td>{{ severity_badge(alert.severity) }}</td>
+      <td>{{ alert.category }}</td>
+      <td><a href="{{ url_for('alert_detail', alert_id=alert.alert_id) }}">{{ alert.title }}</a></td>
+      <td>{{ alert.source_ip or '-' }}</td>
+      <td>{{ alert.status }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<p class="muted">No alerts recorded yet. Import a log file to begin analysis.</p>{% endif %}
+
+<h2>Recent analysis sessions</h2>
+{% if sessions %}
+<table>
+  <thead><tr><th>Session</th><th>Created</th><th>Mode</th><th>Source</th><th>Events</th><th>Alerts</th></tr></thead>
+  <tbody>
+  {% for session in sessions %}
+    <tr>
+      <td class="small">{{ session.session_id }}</td>
+      <td class="small">{{ session.created_at }}</td>
+      <td><span class="tag">{{ session.mode }}</span></td>
+      <td class="small">{{ session.source_description }}</td>
+      <td>{{ session.event_count }}</td>
+      <td>{{ session.alert_count }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<p class="muted">No sessions yet.</p>{% endif %}
+{% endblock %}
+{% block scripts %}
+<script>setTimeout(function(){ window.location.reload(); }, 30000);</script>
+{% endblock %}

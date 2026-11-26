@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "severity_order": [
+    "INFO",
+    "LOW",
+    "MEDIUM",
+    "HIGH",
+    "CRITICAL"
+  ],
+  "rules": {
+    "ssh_brute_force": {
+      "enabled": true,
+      "severity": "HIGH",
+      "threshold": 10,
+      "window_seconds": 300,
+      "username_escalation_count": 3
+    },
+    "success_after_failures": {
+      "enabled": true,
+      "severity": "HIGH",
+      "failure_threshold": 5,
+      "window_seconds": 600
+    },
+    "port_scan": {
+      "enabled": true,
+      "severity": "MEDIUM",
+      "distinct_port_threshold": 10,
+      "failed_threshold": 5,
+      "window_seconds": 300
+    },
+    "suspicious_ip": {
+      "enabled": true,
+      "severity": "MEDIUM",
+      "failure_threshold": 20,
+      "window_seconds": 600,
+      "denylist": [],
+      "allowlist": [
+        "127.0.0.1",
+        "::1"
+      ]
+    },
+    "web_attack": {
+      "enabled": true,
+      "severity": "HIGH",
+      "auth_failure_threshold": 20,
+      "window_seconds": 300,
+      "patterns": {
+        "sql_injection": [
+          "(?i)(\\bunion\\b[^\\n]{0,40}\\bselect\\b)",
+          "(?i)(\\bor\\b|\\band\\b)\\s+['\"]?\\d+['\"]?\\s*=\\s*['\"]?\\d+",
+          "(?i)('\\s*or\\s*'1'\\s*=\\s*'1)",
+          "(?i)(sleep\\s*\\(|benchmark\\s*\\(|pg_sleep\\s*\\()",
+          "(?i)(information_schema|xp_cmdshell)"
+        ],
+        "xss": [
+          "(?i)(<script[^>]*>)",
+          "(?i)(javascript\\s*:)",
+          "(?i)(on(error|load|mouseover|click)\\s*=)",
+          "(?i)(<img[^>]+src\\s*=)"
+        ],
+        "directory_traversal": [
+          "(\\.\\./){1,}",
+          "(\\.\\.\\\\){1,}",
+          "(?i)(%2e%2e%2f|%2e%2e/|%252e%252e)",
+          "(?i)(/etc/passwd|/etc/shadow|boot\\.ini|win\\.ini)"
+        ],
+        "sensitive_files": [
+          "(?i)((^|/)\\.env([./?\\s]|$)|/wp-config\\.php|/config\\.php|/\\.git/|/\\.htaccess)",
+          "(?i)(phpmyadmin|/admin/config|/server-status)",
+          "(?i)(id_rsa|authorized_keys|\\.aws/credentials)"
+        ]
+      }
+    },
+    "windows_security": {
+      "enabled": true,
+      "failed_logon_threshold": 5,
+      "window_seconds": 600,
+      "rule_severities": {
+        "4625": "MEDIUM",
+        "4648": "MEDIUM",
+        "4672": "LOW",
+        "4688": "INFO",
+        "4697": "MEDIUM",
+        "4720": "MEDIUM",
+        "4728": "MEDIUM",
+        "4732": "MEDIUM",
+        "4740": "HIGH",
+        "1102": "CRITICAL"
+      }
+    }
+  }
+}

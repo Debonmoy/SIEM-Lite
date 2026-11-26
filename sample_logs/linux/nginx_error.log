@@ -1,0 +1,2 @@
+2024/01/15 09:12:00 [error] 1234#1234: *5 access forbidden by rule, client: 198.51.100.66, server: example.com, request: "GET /admin HTTP/1.1"
+2024/01/15 09:12:05 [error] 1234#1234: *6 open() "/usr/share/nginx/html/.env" failed (2: No such file or directory), client: 203.0.113.77, server: example.com, request: "GET /.env HTTP/1.1"

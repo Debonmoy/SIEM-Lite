@@ -1,0 +1,17 @@
+Jan 15 09:50:00 web01 sshd[2200]: Failed password for invalid user admin from 203.0.113.50 port 41001 ssh2
+Jan 15 09:50:01 web01 sshd[2201]: Failed password for invalid user root from 203.0.113.50 port 41002 ssh2
+Jan 15 09:50:02 web01 sshd[2202]: Failed password for invalid user oracle from 203.0.113.50 port 41003 ssh2
+Jan 15 09:50:03 web01 sshd[2203]: Failed password for invalid user test from 203.0.113.50 port 41004 ssh2
+Jan 15 09:50:04 web01 sshd[2204]: Failed password for invalid user postgres from 203.0.113.50 port 41005 ssh2
+Jan 15 09:50:05 web01 sshd[2205]: Failed password for invalid user admin from 203.0.113.50 port 41006 ssh2
+Jan 15 09:50:06 web01 sshd[2206]: Failed password for invalid user root from 203.0.113.50 port 41007 ssh2
+Jan 15 09:50:07 web01 sshd[2207]: Failed password for invalid user ubuntu from 203.0.113.50 port 41008 ssh2
+Jan 15 09:50:08 web01 sshd[2208]: Failed password for invalid user admin from 203.0.113.50 port 41009 ssh2
+Jan 15 09:50:09 web01 sshd[2209]: Failed password for invalid user ftp from 203.0.113.50 port 41010 ssh2
+Jan 15 09:50:10 web01 sshd[2210]: Failed password for invalid user root from 203.0.113.50 port 41011 ssh2
+Jan 15 09:50:11 web01 sshd[2211]: Failed password for invalid user admin from 203.0.113.50 port 41012 ssh2
+Jan 15 09:55:20 web01 sshd[2299]: Accepted password for deploy from 203.0.113.50 port 41200 ssh2
+Jan 15 09:56:00 web01 sudo: deploy : TTY=pts/0 ; PWD=/home/deploy ; USER=root ; COMMAND=/usr/bin/apt update
+Jan 15 09:57:00 web01 useradd[3001]: new user: name=backdoor, UID=1002, GID=1002
+Jan 15 09:58:00 web01 pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=198.51.100.77 user=root
+Jan 15 09:59:00 web01 sshd[3010]: Accepted publickey for deploy from 192.0.2.10 port 50022 ssh2

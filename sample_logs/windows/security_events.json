@@ -1,0 +1,163 @@
+[
+  {
+    "EventID": 4625,
+    "TimeCreated": "2024-01-15T09:30:00.1234567Z",
+    "Computer": "DC01",
+    "Provider": "Microsoft-Windows-Security-Auditing",
+    "EventData": {
+      "TargetUserName": "administrator",
+      "IpAddress": "203.0.113.50",
+      "IpPort": "50000",
+      "LogonType": "3",
+      "Status": "0xc000006d"
+    }
+  },
+  {
+    "EventID": 4625,
+    "TimeCreated": "2024-01-15T09:31:00.1234567Z",
+    "Computer": "DC01",
+    "Provider": "Microsoft-Windows-Security-Auditing",
+    "EventData": {
+      "TargetUserName": "administrator",
+      "IpAddress": "203.0.113.50",
+      "IpPort": "50001",
+      "LogonType": "3",
+      "Status": "0xc000006d"
+    }
+  },
+  {
+    "EventID": 4625,
+    "TimeCreated": "2024-01-15T09:32:00.1234567Z",
+    "Computer": "DC01",
+    "Provider": "Microsoft-Windows-Security-Auditing",
+    "EventData": {
+      "TargetUserName": "administrator",
+      "IpAddress": "203.0.113.50",
+      "IpPort": "50002",
+      "LogonType": "3",
+      "Status": "0xc000006d"
+    }
+  },
+  {
+    "EventID": 4625,
+    "TimeCreated": "2024-01-15T09:33:00.1234567Z",
+    "Computer": "DC01",
+    "Provider": "Microsoft-Windows-Security-Auditing",
+    "EventData": {
+      "TargetUserName": "administrator",
+      "IpAddress": "203.0.113.50",
+      "IpPort": "50003",
+      "LogonType": "3",
+      "Status": "0xc000006d"
+    }
+  },
+  {
+    "EventID": 4625,
+    "TimeCreated": "2024-01-15T09:34:00.1234567Z",
+    "Computer": "DC01",
+    "Provider": "Microsoft-Windows-Security-Auditing",
+    "EventData": {
+      "TargetUserName": "administrator",
+      "IpAddress": "203.0.113.50",
+      "IpPort": "50004",
+      "LogonType": "3",
+      "Status": "0xc000006d"
+    }
+  },
+  {
+    "EventID": 4625,
+    "TimeCreated": "2024-01-15T09:35:00.1234567Z",
+    "Computer": "DC01",
+    "Provider": "Microsoft-Windows-Security-Auditing",
+    "EventData": {
+      "TargetUserName": "administrator",
+      "IpAddress": "203.0.113.50",
+      "IpPort": "50005",
+      "LogonType": "3",
+      "Status": "0xc000006d"
+    }
+  },
+  {
+    "EventID": 4624,
+    "TimeCreated": "2024-01-15T09:37:00Z",
+    "Computer": "DC01",
+    "EventData": {
+      "TargetUserName": "administrator",
+      "IpAddress": "203.0.113.50",
+      "LogonType": "10"
+    }
+  },
+  {
+    "EventID": 4740,
+    "TimeCreated": "2024-01-15T09:38:00Z",
+    "Computer": "DC01",
+    "EventData": {
+      "TargetUserName": "svc_backup"
+    }
+  },
+  {
+    "EventID": 4720,
+    "TimeCreated": "2024-01-15T09:40:00Z",
+    "Computer": "DC01",
+    "EventData": {
+      "TargetUserName": "attacker",
+      "SubjectUserName": "administrator"
+    }
+  },
+  {
+    "EventID": 4728,
+    "TimeCreated": "2024-01-15T09:41:00Z",
+    "Computer": "DC01",
+    "EventData": {
+      "MemberName": "attacker",
+      "GroupName": "Domain Admins",
+      "SubjectUserName": "administrator"
+    }
+  },
+  {
+    "EventID": 4697,
+    "TimeCreated": "2024-01-15T09:42:00Z",
+    "Computer": "DC01",
+    "EventData": {
+      "ServiceName": "EvilSvc",
+      "ImagePath": "C:\\Windows\\Temp\\evil.exe",
+      "SubjectUserName": "administrator"
+    }
+  },
+  {
+    "EventID": 4688,
+    "TimeCreated": "2024-01-15T09:43:00Z",
+    "Computer": "DC01",
+    "EventData": {
+      "SubjectUserName": "attacker",
+      "NewProcessName": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "CommandLine": "powershell -enc SQBFAFgA"
+    }
+  },
+  {
+    "EventID": 4648,
+    "TimeCreated": "2024-01-15T09:44:00Z",
+    "Computer": "DC01",
+    "EventData": {
+      "SubjectUserName": "attacker",
+      "TargetUserName": "administrator",
+      "IpAddress": "203.0.113.50"
+    }
+  },
+  {
+    "EventID": 4672,
+    "TimeCreated": "2024-01-15T09:45:00Z",
+    "Computer": "DC01",
+    "EventData": {
+      "SubjectUserName": "attacker"
+    }
+  },
+  {
+    "EventID": 1102,
+    "TimeCreated": "2024-01-15T09:50:00Z",
+    "Computer": "DC01",
+    "EventData": {
+      "SubjectUserName": "attacker"
+    }
+  }
+]

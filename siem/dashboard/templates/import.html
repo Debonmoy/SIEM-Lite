@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% from "_macros.html" import severity_badge %}
+{% block title %}Import logs — {{ app_name }}{% endblock %}
+{% block content %}
+<h1>Import &amp; analyze logs</h1>
+<p class="muted">
+  Upload log files for offline analysis. Files are stored in a temporary directory,
+  analyzed, then deleted. Only extracted events and alerts are kept in the local
+  database. Uploaded content is never executed.
+</p>
+
+<div class="live-note">
+  <strong>Mode:</strong> Offline analysis. Live Linux monitoring is a CLI feature and is
+  only available on Linux/WSL. Current environment: {{ platform_info.description }}.
+  <div class="muted small">{{ live_notice }}</div>
+</div>
+
+{% if errors %}
+<div class="flash error">
+  <strong>Processing messages</strong>
+  <ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+
+<form class="panel" method="post" enctype="multipart/form-data" action="{{ url_for('import_logs') }}">
+  <h2>Select files</h2>
+  <label>Log files (multiple allowed)</label>
+  <input type="file" name="files" multiple required>
+  <label>Log format</label>
+  <select name="format">
+    {% for fmt in formats %}<option value="{{ fmt }}">{{ fmt }}</option>{% endfor %}
+  </select>
+  <p class="muted small">
+    Supported: Linux auth/SSH, Apache/Nginx access &amp; error, Windows EVTX/XML/CSV/JSON,
+    firewall key-value logs, and generic text logs. Maximum size per request:
+    {{ max_upload_mb }} MB.
+  </p>
+  <button class="btn" type="submit">Upload and analyze</button>
+</form>
+
+{% if result %}
+<h2>Analysis result</h2>
+<section class="cards">
+  <div class="card"><div class="num">{{ result.events_parsed }}</div><div class="lbl">Events parsed</div></div>
+  <div class="card"><div class="num">{{ result.events_inserted }}</div><div class="lbl">New events stored</div></div>
+  <div class="card"><div class="num">{{ result.duplicates_dropped }}</div><div class="lbl">Duplicates dropped</div></div>
+  <div class="card"><div class="num">{{ result.findings|length }}</div><div class="lbl">Findings</div></div>
+  <div class="card crit"><div class="num">{{ result.alerts|length }}</div><div class="lbl">New alerts</div></div>
+</section>
+<p class="small muted">Session: {{ result.session_id }}</p>
+
+{% if result.alerts %}
+<table>
+  <thead><tr><th>Severity</th><th>Category</th><th>Alert</th><th>Source IP</th><th>Events</th></tr></thead>
+  <tbody>
+  {% for alert in result.alerts %}
+    <tr>
+      <td>{{ severity_badge(alert.severity) }}</td>
+      <td>{{ alert.category }}</td>
+      <td><a href="{{ url_for('alert_detail', alert_id=alert.alert_id) }}">{{ alert.title }}</a></td>
+      <td>{{ alert.source_ip or '-' }}</td>
+      <td>{{ alert.event_count }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="muted">No alerts were generated for this import.</p>
+{% endif %}
+{% endif %}
+
+<h2>Recent sessions</h2>
+{% if sessions %}
+<table>
+  <thead><tr><th>Session</th><th>Created</th><th>Mode</th><th>Source</th><th>Events</th><th>Alerts</th></tr></thead>
+  <tbody>
+  {% for session in sessions %}
+    <tr><td class="small">{{ session.session_id }}</td><td class="small">{{ session.created_at }}</td>
+    <td><span class="tag">{{ session.mode }}</span></td><td class="small">{{ session.source_description }}</td>
+    <td>{{ session.event_count }}</td><td>{{ session.alert_count }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<p class="muted">No sessions recorded.</p>{% endif %}
+{% endblock %}

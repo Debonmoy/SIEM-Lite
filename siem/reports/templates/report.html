@@ -1,0 +1,175 @@
+{% macro bar(item, max_count) -%}
+<div class="bar-row">
+  <span class="bar-label">{{ item.label }}</span>
+  <span class="bar-track"><span class="bar-fill" style="width: {{ (item.count / max_count * 100) if max_count else 0 }}%"></span></span>
+  <span class="bar-value">{{ item.count }}</span>
+</div>
+{%- endmacro %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }}</title>
+<style>
+  :root { --bg:#0f1420; --panel:#18202f; --muted:#8ea0bd; --text:#e6edf7; --accent:#4da3ff; --line:#253148; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: -apple-system, Segoe UI, Roboto, Ubuntu, sans-serif; background:var(--bg); color:var(--text); }
+  header { padding: 28px 32px; border-bottom:1px solid var(--line); background:linear-gradient(135deg,#111827,#1b2a44); }
+  header h1 { margin:0 0 6px; font-size: 26px; }
+  header p { margin:0; color:var(--muted); }
+  main { padding: 24px 32px 60px; max-width: 1400px; margin: 0 auto; }
+  h2 { margin: 32px 0 12px; font-size: 18px; border-left: 4px solid var(--accent); padding-left:10px; }
+  .grid { display:grid; gap:16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; }
+  .card .num { font-size: 28px; font-weight: 700; }
+  .card .lbl { color:var(--muted); font-size: 13px; margin-top:4px; }
+  .two { display:grid; gap:16px; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); }
+  table { width:100%; border-collapse: collapse; background:var(--panel); border:1px solid var(--line); border-radius:10px; overflow:hidden; font-size:13px; }
+  th, td { padding:9px 10px; text-align:left; border-bottom:1px solid var(--line); vertical-align: top; }
+  th { background:#1f2b40; color:#c7d5ea; font-weight:600; }
+  tr:last-child td { border-bottom:none; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:700; }
+  .sev-INFO { background:#173a4d; color:#7fd7ff; }
+  .sev-LOW { background:#173d2b; color:#7fe3a8; }
+  .sev-MEDIUM { background:#4a3d12; color:#ffd76a; }
+  .sev-HIGH { background:#4d2218; color:#ff9a7a; }
+  .sev-CRITICAL { background:#4d0f1c; color:#ff6b8b; }
+  .bar-row { display:flex; align-items:center; gap:10px; margin:6px 0; font-size:13px; }
+  .bar-label { width: 160px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .bar-track { flex:1; background:#111a29; border-radius:6px; height:10px; overflow:hidden; }
+  .bar-fill { display:block; height:100%; background:linear-gradient(90deg,#2f6fd0,#4da3ff); }
+  .bar-value { width: 60px; text-align:right; }
+  details { margin-top:6px; }
+  pre { white-space: pre-wrap; word-break: break-word; background:#0d1522; padding:10px; border-radius:8px; font-size:12px; max-height:340px; overflow:auto; }
+  .muted { color:var(--muted); }
+  .small { font-size:12px; }
+  ul { margin:6px 0 0 18px; padding:0; }
+  footer { margin-top:40px; color:var(--muted); font-size:12px; border-top:1px solid var(--line); padding-top:16px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>{{ title }}</h1>
+  <p>Log Analyzer &amp; Mini SIEM &middot; Author: Debonmoy Pal &middot; Generated {{ generated_at }}</p>
+</header>
+<main>
+  <section class="grid">
+    <div class="card"><div class="num">{{ overview.total_events }}</div><div class="lbl">Events analyzed</div></div>
+    <div class="card"><div class="num">{{ overview.total_alerts }}</div><div class="lbl">Total alerts</div></div>
+    <div class="card"><div class="num">{{ overview.critical_alerts }}</div><div class="lbl">Critical alerts</div></div>
+    <div class="card"><div class="num">{{ overview.high_alerts }}</div><div class="lbl">High alerts</div></div>
+    <div class="card"><div class="num">{{ overview.unique_ips }}</div><div class="lbl">Unique source IPs</div></div>
+    <div class="card"><div class="num">{{ overview.failed_logins }}</div><div class="lbl">Failed logins</div></div>
+    <div class="card"><div class="num">{{ overview.open_alerts }}</div><div class="lbl">Open alerts</div></div>
+  </section>
+
+  <h2>Security analytics</h2>
+  <div class="two">
+    <div class="card">
+      <h3>Alerts by severity</h3>
+      {% set m = (severity|map(attribute='count')|max) if severity else 0 %}
+      {% for item in severity %}{{ bar(item, m) }}{% else %}<p class="muted">No alerts.</p>{% endfor %}
+    </div>
+    <div class="card">
+      <h3>Attacks by category</h3>
+      {% set m = (category|map(attribute='count')|max) if category else 0 %}
+      {% for item in category %}{{ bar(item, m) }}{% else %}<p class="muted">No alerts.</p>{% endfor %}
+    </div>
+    <div class="card">
+      <h3>Top source IPs</h3>
+      {% set m = (top_ips|map(attribute='count')|max) if top_ips else 0 %}
+      {% for item in top_ips %}{{ bar(item, m) }}{% else %}<p class="muted">No events.</p>{% endfor %}
+    </div>
+    <div class="card">
+      <h3>Most targeted usernames</h3>
+      {% set m = (top_users|map(attribute='count')|max) if top_users else 0 %}
+      {% for item in top_users %}{{ bar(item, m) }}{% else %}<p class="muted">No usernames.</p>{% endfor %}
+    </div>
+    <div class="card">
+      <h3>Windows Event ID distribution</h3>
+      {% set m = (event_ids|map(attribute='count')|max) if event_ids else 0 %}
+      {% for item in event_ids %}{{ bar(item, m) }}{% else %}<p class="muted">No Windows events.</p>{% endfor %}
+    </div>
+    <div class="card">
+      <h3>Events by format</h3>
+      {% set m = (formats|map(attribute='count')|max) if formats else 0 %}
+      {% for item in formats %}{{ bar(item, m) }}{% else %}<p class="muted">No events.</p>{% endfor %}
+    </div>
+  </div>
+
+  <h2>Alerts ({{ alerts|length }})</h2>
+  {% if alerts %}
+  <table>
+    <thead><tr><th>Created</th><th>Severity</th><th>Category</th><th>Source IP</th><th>User</th><th>Status</th><th>Alert</th></tr></thead>
+    <tbody>
+    {% for alert in alerts %}
+      <tr>
+        <td class="small">{{ alert.created_at }}</td>
+        <td><span class="badge sev-{{ alert.severity }}">{{ alert.severity }}</span></td>
+        <td>{{ alert.category }}</td>
+        <td>{{ alert.source_ip or '-' }}</td>
+        <td>{{ alert.username or '-' }}</td>
+        <td>{{ alert.status }}</td>
+        <td>
+          <strong>{{ alert.title }}</strong><br>
+          <span class="muted small">{{ alert.description }}</span>
+          {% if alert.explanation %}<details><summary>Explanation</summary><p class="small">{{ alert.explanation }}</p></details>{% endif %}
+          {% if alert.recommended_actions %}
+          <details><summary>Recommended investigation steps</summary>
+            <ul>{% for step in alert.recommended_actions %}<li class="small">{{ step }}</li>{% endfor %}</ul>
+          </details>
+          {% endif %}
+          {% if alert.evidence %}
+          <details><summary>Supporting evidence ({{ alert.event_count }} events)</summary>
+            <pre>{{ alert.evidence | tojson(indent=2) }}</pre>
+          </details>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<p class="muted">No alerts recorded.</p>{% endif %}
+
+  <h2>Recent events</h2>
+  {% if events %}
+  <table>
+    <thead><tr><th>Timestamp</th><th>Format</th><th>Type</th><th>Source IP</th><th>User</th><th>Status/Result</th><th>Message</th></tr></thead>
+    <tbody>
+    {% for event in events %}
+      <tr>
+        <td class="small">{{ event.timestamp or '-' }}</td>
+        <td>{{ event.log_format }}</td>
+        <td>{{ event.event_type or '-' }}{% if event.event_code %} ({{ event.event_code }}){% endif %}</td>
+        <td>{{ event.source_ip or '-' }}</td>
+        <td>{{ event.username or '-' }}</td>
+        <td>{{ event.auth_result or event.http_status or '-' }}</td>
+        <td class="small">{{ (event.raw_message or '')[:220] }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<p class="muted">No events recorded.</p>{% endif %}
+
+  <h2>Analysis sessions</h2>
+  {% if sessions %}
+  <table>
+    <thead><tr><th>Session</th><th>Created</th><th>Mode</th><th>Source</th><th>Events</th><th>Alerts</th></tr></thead>
+    <tbody>
+    {% for session in sessions %}
+      <tr><td class="small">{{ session.session_id }}</td><td class="small">{{ session.created_at }}</td>
+      <td>{{ session.mode }}</td><td class="small">{{ session.source_description }}</td>
+      <td>{{ session.event_count }}</td><td>{{ session.alert_count }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}<p class="muted">No sessions recorded.</p>{% endif %}
+
+  <footer>
+    Severity values are heuristic risk indicators, not statistically validated probabilities.
+    This report was generated from the local SQLite database; no data was sent externally.
+  </footer>
+</main>
+</body>
+</html>
