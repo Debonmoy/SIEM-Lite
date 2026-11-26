@@ -41,3 +41,6 @@ Thumbs.db
 
 # Temporary uploads
 minisiem_upload_*/
+
+DEVELOPMENT_LOG.md
+DEVELOPMENT_PLAN.md
